@@ -548,7 +548,7 @@ CO2 Impact: ${satelliteMetadata.inference.impact_co2} metric tonnes
             onDeleteZone={deleteWatchZone}
             onCompareZone={handleCompareZone}
             selectedZoneId={selectedZone}
-            selectedAlertId={selectedAlert?.id || null}
+            _selectedAlertId={selectedAlert?.id || null}
             predictionVisible={predictionVisible}
             role={currentRole}
             isLiveMap={!compareMode}
@@ -566,7 +566,7 @@ CO2 Impact: ${satelliteMetadata.inference.impact_co2} metric tonnes
               onDeleteZone={deleteWatchZone}
               onCompareZone={handleCompareZone}
               selectedZoneId={selectedZone}
-              selectedAlertId={selectedAlert?.id || null}
+              _selectedAlertId={selectedAlert?.id || null}
               predictionVisible={predictionVisible}
               role={currentRole}
               isLiveMap={true}

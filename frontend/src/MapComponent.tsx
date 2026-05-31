@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, FeatureGroup, GeoJSON, Popup, ZoomControl, Circle, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, FeatureGroup, GeoJSON, Popup, ZoomControl, Circle } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -22,7 +22,7 @@ interface MapComponentProps {
   alerts: any; // GeoJSON FeatureCollection
   watchZones: any; // GeoJSON FeatureCollection
   selectedZoneId: number | null;
-  selectedAlertId?: number | null;
+  _selectedAlertId?: number | null;
   predictionVisible: boolean;
   role: 'Government' | 'NGO' | 'Public';
   isLiveMap?: boolean;
@@ -36,7 +36,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   alerts, 
   watchZones,
   selectedZoneId,
-  selectedAlertId,
+  _selectedAlertId,
   predictionVisible,
   role,
   isLiveMap = true
