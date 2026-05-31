@@ -99,11 +99,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   return (
     <div className="map-container-wrapper">
       <MapContainer 
-        center={initialCenter} 
-        zoom={initialZoom} 
-        style={{ height: '100%', width: '100%' }}
-        zoomControl={false}
-      >
+            center={initialCenter} 
+            zoom={initialZoom} 
+            style={{ height: '100%', width: '100%', minHeight: '500px' }}
+            zoomControl={false}
+          >
         <TileLayer
             url={isLiveMap 
               ? "http://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" 
