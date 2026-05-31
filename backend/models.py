@@ -1,13 +1,21 @@
 import os
-from sqlalchemy import Column, Integer, String, Float, DateTime, create_engine
+from sqlalchemy import Column, Integer, String, Float, DateTime, create_engine, text
 from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.engine import URL
 from geoalchemy2 import Geometry
 from datetime import datetime
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://spectrax:spectraxpassword@localhost:5432/spectrax_db")
-# Fix Render's postgres:// URL to be postgresql:// for SQLAlchemy
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+print("DEBUG: Original DATABASE_URL:", repr(DATABASE_URL)) # Debug print
+
+# Fix Render's postgres:// URL to be postgresql:// for SQLAlchemy using SQLAlchemy's URL object
+url = URL.make_url(DATABASE_URL)
+if url.drivername == "postgres":
+    url = url.set(drivername="postgresql")
+DATABASE_URL = url.render_as_string(hide_password=False)
+
+print("DEBUG: Modified DATABASE_URL:", repr(DATABASE_URL)) # Debug print
 
 # Add connection pool settings for Render
 engine = create_engine(
