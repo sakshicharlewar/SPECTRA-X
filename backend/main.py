@@ -18,9 +18,6 @@ from stac import STACClient
 
 stac_client = STACClient()
 
-# Create tables
-models.Base.metadata.create_all(bind=engine)
-
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="SpectraX Backend", version="1.0.0")
@@ -51,6 +48,11 @@ manager = ConnectionManager()
 
 @app.on_event("startup")
 async def startup_event():
+    # Create database tables on startup
+    try:
+        models.Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Warning: Could not create tables: {e}")
     # Start Redis listener as a background task
     asyncio.create_task(redis_listener())
 
