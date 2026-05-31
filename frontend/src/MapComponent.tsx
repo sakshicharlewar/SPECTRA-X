@@ -8,10 +8,19 @@ import './MapComponent.css';
 
 // Helper function to validate GeoJSON
 const isValidGeoJSON = (data: any): boolean => {
-  if (!data || typeof data !== 'object') return false;
-  if (data.type !== 'FeatureCollection') return false;
-  if (!Array.isArray(data.features)) return false;
-  return true;
+  try {
+    if (!data || typeof data !== 'object') return false;
+    if (data.type !== 'FeatureCollection') return false;
+    if (!Array.isArray(data.features)) return false;
+    // Make sure features are valid
+    for (const feature of data.features) {
+      if (!feature || typeof feature !== 'object') return false;
+      if (feature.type !== 'Feature') return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 // Fix Leaflet icons issue
@@ -47,6 +56,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   role,
   isLiveMap = true
 }) => {
+  // Local empty GeoJSON fallback
+  const emptyGeoJSON = { type: "FeatureCollection" as const, features: [] };
+  const safeAlerts = isValidGeoJSON(alerts) ? alerts : emptyGeoJSON;
+  const safeWatchZones = isValidGeoJSON(watchZones) ? watchZones : emptyGeoJSON;
+
   let initialCenter: [number, number] = [-10.0, -60.0];
   let initialZoom = 5;
 
@@ -175,10 +189,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             />
         </FeatureGroup>
 
-        {isValidGeoJSON(watchZones) && watchZones.features.length > 0 && (
+        {safeWatchZones.features.length > 0 && (
             <GeoJSON 
-                key={`zones-${watchZones.features.length}`}
-                data={watchZones} 
+                key={`zones-${safeWatchZones.features.length}`}
+                data={safeWatchZones} 
                 onEachFeature={onEachWatchZone}
                 style={(feature) => ({
                     color: feature?.properties.id === selectedZoneId ? "#00f2ff" : "var(--accent-blue)",
@@ -190,10 +204,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             />
         )}
 
-        {isLiveMap && isValidGeoJSON(alerts) && alerts.features.length > 0 && role !== 'Public' && (
+        {isLiveMap && safeAlerts.features.length > 0 && role !== 'Public' && (
             <GeoJSON 
-                key={`alerts-${alerts.features.length}`}
-                data={alerts} 
+                key={`alerts-${safeAlerts.features.length}`}
+                data={safeAlerts} 
                 onEachFeature={onEachAlert}
                 style={{
                     color: "var(--accent-alert)",
