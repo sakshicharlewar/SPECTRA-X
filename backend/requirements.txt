@@ -3,7 +3,7 @@ FastAPI[all]==0.110.0
 uvicorn[standard]==0.29.0
 SQLAlchemy==2.0.29
 GeoAlchemy2==0.14.7
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.12
 celery==5.3.6
 redis==5.0.3
 shapely==2.0.3
