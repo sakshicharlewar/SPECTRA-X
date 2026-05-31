@@ -36,8 +36,9 @@ interface AlertFeature {
 }
 
 function App() {
-  const [alerts, setAlerts] = useState<{ type: string; features: AlertFeature[] }>({ type: "FeatureCollection", features: [] });
-  const [watchZones, setWatchZones] = useState<{ type: string; features: any[] }>({ type: "FeatureCollection", features: [] });
+  const emptyFeatureCollection = { type: "FeatureCollection" as const, features: [] };
+  const [alerts, setAlerts] = useState<{ type: string; features: AlertFeature[] }>(emptyFeatureCollection);
+  const [watchZones, setWatchZones] = useState<{ type: string; features: any[] }>(emptyFeatureCollection);
   const [stats, setStats] = useState({ active_alerts: 0, hectares_scanned: 0, system_health: "Loading...", active_watch_zones: 0 });
   const [selectedZone, setSelectedZone] = useState<number | null>(null);
   const [selectedAlert, setSelectedAlert] = useState<any | null>(null);

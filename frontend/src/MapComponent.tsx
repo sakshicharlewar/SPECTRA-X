@@ -114,7 +114,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           >
         <TileLayer
             url={isLiveMap 
-              ? "http://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" 
+              ? "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" 
               : "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"}
             attribution={isLiveMap ? '&copy; Google Maps' : 'Tiles &copy; Esri &mdash; Source: Esri'}
             className={isLiveMap ? "" : "map-tiles-previous"}
