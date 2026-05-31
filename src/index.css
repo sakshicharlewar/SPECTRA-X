@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-spectra-black text-white m-0 p-0 overflow-hidden w-screen h-screen font-sans;
+  }
+}
+
+/* Base styling for Mapbox popups or custom controls if needed */
+.mapboxgl-ctrl-bottom-right,
+.mapboxgl-ctrl-bottom-left {
+  display: none !important; /* Hide default Mapbox controls for custom UI */
+}

@@ -1,0 +1,48 @@
+import os
+from sqlalchemy import Column, Integer, String, Float, DateTime, create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+from geoalchemy2 import Geometry
+from datetime import datetime
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://spectrax:spectraxpassword@localhost:5432/spectrax_db")
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+class WatchZone(Base):
+    __tablename__ = "watch_zones"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    geometry = Column(Geometry(geometry_type='POLYGON', srid=4326))
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class SatelliteMetadata(Base):
+    __tablename__ = "satellite_metadata"
+    id = Column(Integer, primary_key=True, index=True)
+    item_id = Column(String, index=True) # STAC Item ID
+    captured_at = Column(DateTime)
+    cloud_cover = Column(Float)
+    aoi_geometry = Column(Geometry(geometry_type='POLYGON', srid=4326))
+    assets = Column(String) # JSON string of asset URLs
+    veg_loss = Column(String)
+    soil_moisture = Column(String)
+    impact_trees = Column(Integer)
+    impact_area = Column(Float)
+    impact_co2 = Column(Integer)
+
+class Alert(Base):
+    __tablename__ = "alerts"
+    id = Column(Integer, primary_key=True, index=True)
+    activity_type = Column(String) # e.g., "illegal_mining", "deforestation"
+    geometry = Column(Geometry(geometry_type='POLYGON', srid=4326))
+    detected_at = Column(DateTime, default=datetime.utcnow)
+    satellite_id = Column(Integer) # Optional link to SatelliteMetadata
+    veg_loss = Column(String)
+    soil_moisture = Column(String)
+    impact_trees = Column(Integer)
+    impact_area = Column(Float)
+    impact_co2 = Column(Integer)
+
+# Ensure the database tables are created (in a real app this might use alembic)
+# Note: For PostGIS extensions, you might need to ensure the DB has 'CREATE EXTENSION postgis;'
