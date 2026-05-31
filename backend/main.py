@@ -48,6 +48,15 @@ manager = ConnectionManager()
 
 @app.on_event("startup")
 async def startup_event():
+    # Create PostGIS extensions first
+    try:
+        with engine.connect() as conn:
+            from sqlalchemy import text
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis_topology;"))
+            conn.commit()
+    except Exception as e:
+        print(f"Note: PostGIS extensions may already exist: {e}")
     # Create database tables on startup
     try:
         models.Base.metadata.create_all(bind=engine)
@@ -358,6 +367,10 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "SpectraX Backend", "endpoints": ["/health", "/api/v1/*"]}
 
 @app.get("/health")
 def health():
