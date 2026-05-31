@@ -5,6 +5,9 @@ from geoalchemy2 import Geometry
 from datetime import datetime
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://spectrax:spectraxpassword@localhost:5432/spectrax_db")
+# Fix Render's postgres:// URL to be postgresql:// for SQLAlchemy
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
