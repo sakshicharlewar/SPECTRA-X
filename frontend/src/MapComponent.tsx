@@ -22,7 +22,6 @@ interface MapComponentProps {
   alerts: any; // GeoJSON FeatureCollection
   watchZones: any; // GeoJSON FeatureCollection
   selectedZoneId: number | null;
-  _selectedAlertId?: number | null;
   predictionVisible: boolean;
   role: 'Government' | 'NGO' | 'Public';
   isLiveMap?: boolean;
@@ -36,7 +35,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   alerts, 
   watchZones,
   selectedZoneId,
-  _selectedAlertId,
   predictionVisible,
   role,
   isLiveMap = true
