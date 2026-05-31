@@ -6,6 +6,14 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import './MapComponent.css';
 
+// Helper function to validate GeoJSON
+const isValidGeoJSON = (data: any): boolean => {
+  if (!data || typeof data !== 'object') return false;
+  if (data.type !== 'FeatureCollection') return false;
+  if (!Array.isArray(data.features)) return false;
+  return true;
+};
+
 // Fix Leaflet icons issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -167,7 +175,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             />
         </FeatureGroup>
 
-        {watchZones && watchZones.features && watchZones.features.length > 0 && (
+        {isValidGeoJSON(watchZones) && watchZones.features.length > 0 && (
             <GeoJSON 
                 key={`zones-${watchZones.features.length}`}
                 data={watchZones} 
@@ -182,7 +190,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             />
         )}
 
-        {isLiveMap && alerts && alerts.features && alerts.features.length > 0 && role !== 'Public' && (
+        {isLiveMap && isValidGeoJSON(alerts) && alerts.features.length > 0 && role !== 'Public' && (
             <GeoJSON 
                 key={`alerts-${alerts.features.length}`}
                 data={alerts} 

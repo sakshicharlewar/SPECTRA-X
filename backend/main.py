@@ -25,13 +25,23 @@ try:
     # Import optional dependencies with error handling
     print("INFO: Importing dependencies...")
     from sqlalchemy.orm import Session
-    from geoalchemy2.shape import to_shape
-    from shapely.geometry import shape, mapping
 
-    # Import models
+    # Import models first to get the using_postgis flag
     print("INFO: Importing models...")
     import models
     from models import SessionLocal, engine, WatchZone, Alert
+
+    # Conditionally import geo dependencies
+    to_shape = None
+    shape = None
+    mapping = None
+    try:
+        if models.using_postgis:
+            from geoalchemy2.shape import to_shape
+        from shapely.geometry import shape, mapping
+        print("INFO: Geometry dependencies imported successfully")
+    except Exception as e:
+        print(f"WARNING: Could not import geometry dependencies: {e}")
 
     # Import other modules with try-except
     try:
