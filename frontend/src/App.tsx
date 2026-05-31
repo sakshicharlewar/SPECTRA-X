@@ -59,15 +59,34 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Helper to validate GeoJSON in App too
+  const isValidGeoJSON = (data: any): boolean => {
+    try {
+      if (!data || typeof data !== 'object') return false;
+      if (data.type !== 'FeatureCollection') return false;
+      if (!Array.isArray(data.features)) return false;
+      for (const f of data.features) {
+        if (!f || typeof f !== 'object' || f.type !== 'Feature') return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const fetchAlerts = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/alerts`);
       if (response.ok) {
         const data = await response.json();
-        setAlerts(data);
-        // Auto-select first alert if none selected
-        if (data.features?.length > 0 && !selectedAlert && !selectedZone) {
-          setSelectedAlert(data.features[0].properties);
+        if (isValidGeoJSON(data)) {
+          setAlerts(data);
+          // Auto-select first alert if none selected
+          if (data.features?.length > 0 && !selectedAlert && !selectedZone) {
+            setSelectedAlert(data.features[0].properties);
+          }
+        } else {
+          console.warn("Invalid alerts GeoJSON from API", data);
         }
       }
     } catch (error) {
@@ -80,7 +99,11 @@ function App() {
       const response = await fetch(`${API_BASE_URL}/watch-zones`);
       if (response.ok) {
         const data = await response.json();
-        setWatchZones(data);
+        if (isValidGeoJSON(data)) {
+          setWatchZones(data);
+        } else {
+          console.warn("Invalid watch zones GeoJSON from API", data);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch watch zones", error);

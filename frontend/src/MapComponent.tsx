@@ -189,36 +189,54 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             />
         </FeatureGroup>
 
-        {safeWatchZones.features.length > 0 && (
-            <GeoJSON 
-                key={`zones-${safeWatchZones.features.length}`}
-                data={safeWatchZones} 
-                onEachFeature={onEachWatchZone}
-                style={(feature) => ({
-                    color: feature?.properties.id === selectedZoneId ? "#00f2ff" : "var(--accent-blue)",
-                    weight: feature?.properties.id === selectedZoneId ? 4 : 2,
-                    opacity: 1,
-                    fillOpacity: 0.1,
-                    fillColor: "var(--accent-blue)",
-                })}
-            />
-        )}
+        {(() => {
+            try {
+                if (safeWatchZones.features.length > 0) {
+                    return (
+                        <GeoJSON 
+                            key={`zones-${safeWatchZones.features.length}`}
+                            data={safeWatchZones} 
+                            onEachFeature={onEachWatchZone}
+                            style={(feature) => ({
+                                color: feature?.properties.id === selectedZoneId ? "#00f2ff" : "var(--accent-blue)",
+                                weight: feature?.properties.id === selectedZoneId ? 4 : 2,
+                                opacity: 1,
+                                fillOpacity: 0.1,
+                                fillColor: "var(--accent-blue)",
+                            })}
+                        />
+                    );
+                }
+            } catch (e) {
+                console.warn("Watch zones GeoJSON error:", e);
+            }
+            return null;
+        })()}
 
-        {isLiveMap && safeAlerts.features.length > 0 && role !== 'Public' && (
-            <GeoJSON 
-                key={`alerts-${safeAlerts.features.length}`}
-                data={safeAlerts} 
-                onEachFeature={onEachAlert}
-                style={{
-                    color: "var(--accent-alert)",
-                    weight: 3,
-                    opacity: 1,
-                    fillOpacity: 0.3,
-                    fillColor: "var(--accent-alert)",
-                    dashArray: "5, 10"
-                }}
-            />
-        )}
+        {isLiveMap && role !== 'Public' && (() => {
+            try {
+                if (safeAlerts.features.length > 0) {
+                    return (
+                        <GeoJSON 
+                            key={`alerts-${safeAlerts.features.length}`}
+                            data={safeAlerts} 
+                            onEachFeature={onEachAlert}
+                            style={{
+                                color: "var(--accent-alert)",
+                                weight: 3,
+                                opacity: 1,
+                                fillOpacity: 0.3,
+                                fillColor: "var(--accent-alert)",
+                                dashArray: "5, 10"
+                            }}
+                        />
+                    );
+                }
+            } catch (e) {
+                console.warn("Alerts GeoJSON error:", e);
+            }
+            return null;
+        })()}
 
         {isLiveMap && predictionVisible && (
           <>
